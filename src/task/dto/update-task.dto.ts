@@ -9,7 +9,6 @@ export class UpdateTaskDto extends PartialType(CreateTaskDto) {
     example: 'My Updated Task',
   })
   @IsString()
-  @Length(4, 20)
   title: string;
 
   @ApiProperty({
