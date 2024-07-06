@@ -7,7 +7,7 @@ export class AuthService {
   private oauth2Client;
 
   constructor() {
-    const keyFile = 'credentials.json';
+    const keyFile = 'ARQUIVO COM SUAS CREDENCIAIS GOOGLE';
     const key = JSON.parse(fs.readFileSync(keyFile, 'utf8'));
 
     this.oauth2Client = new google.auth.GoogleAuth({
@@ -21,13 +21,11 @@ export class AuthService {
     const calendar = google.calendar({ version: 'v3', auth });
     try {
       const response = await calendar.events.insert({
-        calendarId: 'theriderofking@gmail.com',
+        calendarId: 'seu gmail',
         requestBody: event,
       });
-      console.log('Event created:', response.data);
       return response.data;
     } catch (error) {
-      console.error('Error creating event:', error);
       throw error;
     }
   }

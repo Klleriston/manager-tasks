@@ -1,25 +1,39 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { NotFoundError } from 'rxjs';
+import { EmailService } from 'src/email/email.service';
 
 @Injectable()
 export class TaskService {
-
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly emailService: EmailService,
+  ) {}
 
   async create(createTaskDto: CreateTaskDto) {
     try {
       if (!createTaskDto.end) {
-        const startTime = new Date(createTaskDto.start); 
+        const startTime = new Date(createTaskDto.start);
         const endTime = new Date(startTime);
         endTime.setHours(startTime.getHours() + 1);
         createTaskDto.end = endTime;
       }
 
-      const task = await this.prismaService.task.create({ data: createTaskDto });
-      return { msg: 'Task created!', ...task };
+      const task = await this.prismaService.task.create({
+        data: createTaskDto,
+      });
+      await this.emailService.sendMail(
+        'SEU EMAIL',
+        `A task ${createTaskDto.title} foi adicionada ao seu calendario`,
+        `descrição dela\n ${createTaskDto.description}\n Att, SEU NOME`,
+      );
+      return { msg: `Deu bom `, ...task };
     } catch (error) {
       console.error('ai nao carai ----->', error);
       throw new InternalServerErrorException('Err :p');
@@ -34,7 +48,7 @@ export class TaskService {
         skip: skip,
         take: itensPage,
       });
-      return tasks; 
+      return tasks;
     } catch (error) {
       console.error('Err aqui hihihi ----->', error);
       throw new InternalServerErrorException('ERR >:|');
@@ -47,9 +61,9 @@ export class TaskService {
       if (!task) {
         throw new NotFoundException('Not found lmao');
       }
-      return { msg: 'tome', ...task }; 
+      return { msg: 'tome', ...task };
     } catch (error) {
-      console.error('tem nada aq nao ----->', error); 
+      console.error('tem nada aq nao ----->', error);
       throw new NotFoundException('Not found lmao');
     }
   }
