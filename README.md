@@ -50,17 +50,12 @@ Para executar este projeto, você precisará de:
     AUTH_PASSWORD_EMAIL="qbtplmyromknndvh"
     ```
 
-4. Execute o Docker para iniciar o banco de dados PostgreSQL:
-    ```bash
-    docker-compose up -d
-    ```
-
-5. Execute as migrações do Prisma para configurar o banco de dados:
+4. Execute as migrações do Prisma para configurar o banco de dados:
     ```bash
     npx prisma migrate dev
     ```
 
-6. Inicie o servidor:
+5. Inicie o servidor:
     ```bash
     npm run start:dev
     ```
