@@ -7,12 +7,19 @@ import { NotFoundError } from 'rxjs';
 @Injectable()
 export class TaskService {
 
-  constructor(private readonly prismaService:PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) {}
 
   async create(createTaskDto: CreateTaskDto) {
     try {
-      const task = await this.prismaService.task.create({data:createTaskDto});
-      return { msg: 'Task created !' ,...task};
+      if (!createTaskDto.end) {
+        const startTime = new Date(createTaskDto.start); 
+        const endTime = new Date(startTime);
+        endTime.setHours(startTime.getHours() + 1);
+        createTaskDto.end = endTime;
+      }
+
+      const task = await this.prismaService.task.create({ data: createTaskDto });
+      return { msg: 'Task created!', ...task };
     } catch (error) {
       console.error('ai nao carai ----->', error);
       throw new InternalServerErrorException('Err :p');
@@ -25,25 +32,25 @@ export class TaskService {
     try {
       const tasks = await this.prismaService.task.findMany({
         skip: skip,
-        take: itensPage
+        take: itensPage,
       });
       return tasks; 
     } catch (error) {
-      console.error('Err aqui hihihi ----->', error)
-      throw new InternalServerErrorException('ERR >:|')
+      console.error('Err aqui hihihi ----->', error);
+      throw new InternalServerErrorException('ERR >:|');
     }
   }
 
   async findOne(id: number) {
     try {
-      const task = await this.prismaService.task.findUnique({where:{id}});
+      const task = await this.prismaService.task.findUnique({ where: { id } });
       if (!task) {
         throw new NotFoundException('Not found lmao');
       }
-      return {msg: 'tome', ...task}; 
+      return { msg: 'tome', ...task }; 
     } catch (error) {
       console.error('tem nada aq nao ----->', error); 
-      throw new NotFoundException('Not found lmao')
+      throw new NotFoundException('Not found lmao');
     }
   }
 
@@ -65,11 +72,11 @@ export class TaskService {
 
   async remove(id: number) {
     try {
-     const task = await this.prismaService.task.delete({where:{id}})
-     return {msg: 'deleted', ...task}
+      const task = await this.prismaService.task.delete({ where: { id } });
+      return { msg: 'deleted', ...task };
     } catch (error) {
-      console.error('ihh ERR ----->', error)
-      throw new InternalServerErrorException('Not deleted try again')
+      console.error('ihh ERR ----->', error);
+      throw new InternalServerErrorException('Not deleted try again');
     }
   }
 }

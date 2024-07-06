@@ -1,35 +1,35 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Post, Body, Delete, Param } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { CreateTaskDto } from './dto/create-task.dto';
-import { UpdateTaskDto } from './dto/update-task.dto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { AuthService } from 'src/auth/auth.service';
 
 @Controller('task')
 export class TaskController {
-  constructor(private readonly taskService: TaskService) {}
+  constructor(
+    private readonly taskService: TaskService,
+    private readonly authService: AuthService
+  ) {}
 
   @ApiTags('Create task')
-  @ApiOperation({summary: 'Create a task'})
+  @ApiOperation({ summary: 'Create a task' })
   @Post()
-  create(@Body() createTaskDto: CreateTaskDto) {
-    return this.taskService.create(createTaskDto);
-  }
+  async create(@Body() createTaskDto: CreateTaskDto) {
+    const task = await this.taskService.create(createTaskDto);
+    
+    const eventData = {
+      summary: task.title,
+      description: task.description,
+      start: {
+        dateTime: task.start.toISOString(),
+      },
+      end: {
+        dateTime: task.end.toISOString(),
+      },
+    };
 
-  @ApiTags('List task')
-  @ApiOperation({summary: 'List a task'})
-  @Get()
-  findAll(@Query('page') page: number) {
-    return this.taskService.findAll(page);
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.taskService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto) {
-    return this.taskService.update(+id, updateTaskDto);
+    const responseTask = await this.authService.createEvent(eventData);
+    return { msg: "consegui porra", responseTask };
   }
 
   @Delete(':id')
