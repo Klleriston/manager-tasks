@@ -8,11 +8,10 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('Manager Tasks API')
     .addTag('Create task')
-    .addTag('List task')
     .build();
-  const document = SwaggerModule.createDocument(app, config); 
+  const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
-  app.useGlobalPipes(new ValidationPipe({transform: true}))
+  app.useGlobalPipes(new ValidationPipe({ transform: true }));
   await app.listen(3000);
 }
 bootstrap();
