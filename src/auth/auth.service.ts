@@ -21,7 +21,7 @@ export class AuthService {
     const calendar = google.calendar({ version: 'v3', auth });
     try {
       const response = await calendar.events.insert({
-        calendarId: 'theriderofking@gmail.com',
+        calendarId: 'your-email here',
         requestBody: event,
       });
       console.log('Event created:', response.data);
