@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsDate, IsString, Length } from 'class-validator';
+import { IsDate, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateTaskDto {
@@ -18,10 +18,21 @@ export class CreateTaskDto {
   description: string;
 
   @ApiProperty({
-    description: 'The date the task is due',
-    example: '2024-07-06'
+    description: 'The start date and time of the task',
+    example: '2024-07-06T09:00:00.000Z'
   })
   @IsDate()
   @Type(() => Date)
-  date: Date;
+  start: Date;
+  
+  @ApiProperty({
+    description: 'The end date and time of the task (optional)',
+    example: '2024-07-06T10:00:00.000Z',
+    required: false
+  })
+  @IsOptional()
+  @IsDate()
+  @Type(() => Date)
+  end?: Date;
+
 }
