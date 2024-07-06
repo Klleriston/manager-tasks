@@ -46,8 +46,8 @@ Para executar este projeto, você precisará de:
     GOOGLE_CLIENT_ID=your-google-client-id
     GOOGLE_CLIENT_SECRET=your-google-client-secret
     GOOGLE_REDIRECT_URI=your-google-redirect-uri
-    AUTH_EMAIL="theriderofking@gmail.com"
-    AUTH_PASSWORD_EMAIL="qbtplmyromknndvh"
+    AUTH_EMAIL="seu-email"
+    AUTH_PASSWORD_EMAIL="sua-senha"
     ```
 
 4. Execute as migrações do Prisma para configurar o banco de dados:
